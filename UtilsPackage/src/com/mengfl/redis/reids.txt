@@ -1,0 +1,201 @@
+http://www.cnblogs.com/always-online/p/4106229.html
+
+redis
+
+一、redis
+
+　　redis是一个开源的使用ANSI C编写的基于key-value持久化产品。它具有高性能，持久化存储特点。redis支持的数据类型有String（字符串），Lists（列表），Sets（集合），Sorted Sets（有序集合），Hashs（哈希）类型。这些数据都支持例如添加，删除，修改，集合之间的交集、并集、差集等相关操作。redis还支持集合的多种排序。这些数据都是存在于内存之中，从而保证了系统的效率。redis也提供了多种语言的客户端，使用也比较方便。
+
+二、redis数据类型
+
+　　1、String（字符串）
+
+　　　　字符串是一种疾病的redis数据类型。该字符串最多可存储512M字节的内容。
+
+　　2、Lists（列表）
+
+　　　　列表是简单的字符串列表，按照插入的顺序排序。我们可以在列表的头部（左边）或尾部（右边）添加元素。一个列表最多可包含2的32次方-1个元素（4294967295，每个表超过40亿个）。
+
+　　3、Sets（集合）
+
+　　　　集合是一个无需的字符串集。该集合里面的元素都是唯一的。我们可以对集合近些元素的添加，删除，判断元素是否存在等操作，也可对两个以上的集合进行集合运算（交集，并集，差集）。一个集合最多也是包含2的32次方-1个元素（4294967295，每个表超过40亿个）。
+
+　　4、Sorted sets（有序集合）
+
+　　　　有序集合与集合类似，里面的元素也是唯一的。只是有序集合的元素都关联这个一个score（评分 数值类型），通过这个score对集合里面的元素进行排序。
+
+　　5、Hash（哈希）
+
+　　　　哈希是一种key-value之间的映射，key和value都是字符串类型。一个hash最多可以包含232-1 字段-值对（超过40亿）。一个拥有少量（100对左右）自动的哈希需要的存储空间很少，所以我们可以在一个redis实例中存储上百万数量级的对象。
+
+ 三、相关命令
+
+　　1、String
+
+　　　　append key value ：追究一个值到key上；如果key不存在，则创建一个key。
+
+　　　　mget key [key ..]  ：获取所有key对于的值。
+
+　　　　setex key seconds value ：设置key-value并设置过期时间（秒）。
+
+　　　　get key value ：获取key对应的值。
+
+　　　　set key value ：设置key-value值。
+
+　　　　strlen key ： 获取key值的长度。
+
+　　　　mset key value [key value ...] ： 设置多个key alue值。
+
+　　　　getrange key start end ：获取key对应的值的字字符串。
+
+　　　　setnx key value ：设置key-value值。不存在则设置值；存在，则是什么都不做。
+
+　　　　bitcount key [start] [end] : 统计字符串指定起始位置的字节数。
+
+　　2、List
+
+　　　　RPUSH key value [value ...] ：从队列的右边入队一个元素。
+
+　　　　LLEN key ：获得队列(List)的长度。
+
+　　　　LPOP key : 从队列的左边出队一个元素（执行之后队列减一）。
+
+　　　　LPUSH key value [value ...] ：从队列的左边入队一个或多个元素。
+
+　　　　LSET key index value ：设置队列里面一个元素的值。
+
+　　　　PUSHX key value ： 从队列的右边入队一个元素，仅队列存在时有效。
+
+　　　　LINDEX key index ：获取一个元素，通过其索引列表。
+
+　　　　LPUSHX key value （队列必须存在）当队列存在时，从队到左边入队一个元素。
+
+　　　　RPOP key ：从队列的右边出队一个元素。
+
+　　　　LTRIM key start stop ：修剪到指定范围内的清单（该队列已经修改）。
+
+　　　　LRANGE key start stop ：从列表中获取指定返回的元素（该队列没有修改）。
+
+　　　　LREM key count value 
+
+count > 0: 从头往尾移除值为 value 的元素,count为移除元素的个数。
+count < 0: 从尾往头移除值为 value 的元素,count为移除元素的个数。
+count = 0: 移除所有值为 value 的元素。
+
+BLPOP key [key ...] timeout ：删除，并获得该列表中的第一元素，或阻塞，直到有一个可用。
+
+BRPOP key [key ...] timeout ：删除，并获得该列表中的最后一个元素，或阻塞，直到有一个可用。
+
+　　　　LINSERT key BEFORE|AFTER pivot value ：在列表中的另一个元素之前或之后插入一个元素。
+
+　　　　RPOPLPUSH source destination ：删除列表中的最后一个元素，将其追加到另一个列表
+
+　　　　　　原子性地返回并移除存储在 source 的列表的最后一个元素（列表尾部元素）， 并把该元素放入存储在 destination 的列表的第一个元素位置（列表头部）。
+　　　　　　例如：假设 source 存储着列表 a,b,c， destination存储着列表 x,y,z。 执行 RPOPLPUSH 得到的结果是 source 保存着列表 a,b ，而 destination 保存着列表 c,x,y,z。
+如果 source 不存在，那么会返回 nil 值，并且不会执行任何操作。 如果 source 和 destination 是同样的，那么这个操作等同于移除列表最后一个元素并且把该元素放在列表头部， 所以这个命令也可以当作是一个旋转列表的命令。
+
+　　　　BRPOPLPUSH source destination timeout ：弹出一个列表的值，将它推到另一个列表，并返回它;或阻塞，直到有一个可用。
+
+　　　　　　BRPOPLPUSH 是 RPOPLPUSH 的阻塞版本。 当 source 包含元素的时候，这个命令表现得跟 RPOPLPUSH 一模一样。 当 source 是空的时候，Redis将会阻塞这个连接，直到另一个客户端 push 元素进入或者达到 timeout 时限。 timeout 为 0 能用于无限期阻塞客户端。
+
+　　3、Sets
+
+　　　　SADD key member [member ...] ：添加一个或者多个元素到集合(set)里。
+
+　　　　　　添加一个或多个指定的member元素到集合的 key中.指定的一个或者多个元素member 如果已经在集合key中存在则忽略.如果集合key 不存在，则新建集合key,并添加member元素到集合key中.如果key 的类型不是集合则返回错误.
+
+　　　　　　返回值整数返回：返回新成功添加到集合里元素的数量，不包括已经存在于集合中的元素。
+
+　　　　SMEMBERS key ：获取集合里面的所有key。
+
+　　　　SCARD key ：获取集合里面的所有key。
+
+　　　　SCARD key ：获取集合里面的元素数量。
+
+　　　　SSCAN key cursor [MATCH pattern] [COUNT count] ：迭代set里面的元素。
+
+　　　　SISMEMBER key member ：确定一个给定的值是一个集合的成员。
+
+　　　　SRANDMEMBER key [count] ：从集合里面随机获取一个元素,count 随机获取元素的个数。
+
+　　　　SREM key member [member ...] ：从集合里删除一个或多个key。
+
+　　　　SDIFF key [key ...]  ：获得队列不存在的元素。
+
+　　　　SDIFFSTORE destination key [key ...] ：获得队列不存在的元素，并存储在一个关键的结果集。
+
+　　　　SINTER key [key ...] ：获得两个集合的交集。
+
+　　　　SMOVE source destination member ：移动集合里面的一个key到另一个集合。
+
+　　　　SUNION key [key ...] ：添加多个set元素,返回给定的多个集合的并集中的所有成员。
+
+　　　　SINTERSTORE destination key [key ...] ：获得两个集合的交集，并存储在一个关键的结果集。
+
+　　　　SPOP key ：删除并获取一个集合里面的元素，该命令与 SRANDMEMBER相似,不同的是srandmember命令返回一个随机元素但是不移除.返回被移除的元素, 当key不存在的时候返回 nil 。
+
+　　　　SDIFFSTORE destination key [key ...] ：获得队列不存在的元素，并存储在一个关键的结果集
+
+该命令类似于 SDIFF, 不同之处在于该命令不返回结果集，而是将结果存放在destination集合中.如果destination 已经存在, 则将其覆盖重写.返回结果集元素的个数。
+
+　　4、Sorted Sets
+
+　　　　ZADD key score member [score member ...] ：添加到有序set的一个或多个成员，或更新的分数，如果它已经存在。　　　　
+
+　　　　ZRANGE key start stop [WITHSCORES] ：返回的成员在排序设置的范围，由指数你也可以使用负数下标，以-1表示最后一个成员，-2表示倒数第二个成员，以此类推。
+
+　　　　ZSCORE key member ：获取成员在排序设置相关的比分。
+
+　　　　ZCARD key :获取一个排序的集合中的成员数量.
+
+　　　　ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count] ：返回的成员在排序设置的范围。
+
+　　　　ZREVRANGE key start stop [WITHSCORES] ：在排序的设置返回的成员范围，通过索引，下令从分数高到低
+
+指定区间内的成员。其中成员的位置按score值递减(从大到小)来排列。具有相同score值的成员按字典序的反序排列。
+
+　　　　ZCOUNT key min max ：指定分数范围的元素个数。score值在min和max之间(默认包括score值等于min或max)的成员。
+
+　　　　ZRANK key member ：确定在排序集合成员的索引。
+
+　　　　ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT offset count] :返回key的有序集合中的分数在max和min之间的所有元素（包括分数等于max或者min的元素）。与有序集合的默认排序相反，对于这个命令，元素被认为是从高分到低具有相同分数的元素按字典反序。
+
+　　　　ZINCRBY key increment member ：为有序集key的成员member的score值加上增量increment。如果key中不存在member，就在key中添加一个member，score是increment（就好像它之前的score是0.0）。如果key不存在，就创建一个只含有指定member成员的有序集合。当key不是有序集类型时，返回一个错误。score值必须是字符串表示的整数值或双精度浮点数，并且能接受double精度的浮点数。也有可能给一个负数来减少score的值。
+
+　　　　ZREM key member [member ...] ：从排序的集合中删除一个或多个成员。
+
+　　　　ZREVRANK key member ：返回有序集key中成员member的排名，其中有序集成员按score值从大到小排列。排名以0为底，也就是说，score值最大的成员排名为0。
+
+　　　　ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] ：计算给定的numkeys个有序集合的交集，并且把结果放到destination中。 在给定要计算的key和其它参数之前，必须先给定key个数(numberkeys)。
+
+　　　　ZREMRANGEBYRANK key start stop ：移除有序集key中，指定排名(rank)区间内的所有成员。下标参数start和stop都以0为底，0处是分数最小的那个元素。这些索引也可是负数，表示位移从最高分处开始数。例如，-1是分数最高的元素，-2是分数第二高的，依次类推。返回值被移除成员的数量。
+
+　　　　ZREMRANGEBYSCORE key min max ：删除一个排序的设置在给定的分数所有成员，移除有序集key中，所有score值介于min和max之间(包括等于min或max)的成员。自版本2.1.6开始，score值等于min或max的成员也可以不包括在内，语法请参见ZRANGEBYSCORE命令。
+
+　　5、Hash
+
+　　　　HMSET key field value [field value ...] ：设置hash字段值。
+
+　　　　HKEYS key ：获取hash的所有字段。
+
+　　　　HLEN key ：获取hash里所有字段的数量。
+
+　　　　HVALS key ：获得hash的所有值。
+
+　　　　HGETALL key ：从哈希集中读取全部的域和值。
+
+　　　　HGET key field ：读取哈希域的的值。
+
+　　　　HMGET key field [field ...] ：获取hash里面指定字段的值。
+
+　　　　HSCAN key cursor [MATCH pattern] [COUNT count] ：迭代hash里面的元素。
+
+　　　　HSET key field value ：设置hash里面一个字段的值。返回值：1如果field是一个新的字段；0如果field原来在map里面已经存在。
+
+　　　　HEXISTS key field ：判断给定域是否存在于哈希集中。
+
+　　　　HDEL key field [field ...] ：删除一个或多个哈希域。
+
+　　　　HINCRBY key field increment ：将哈希集中指定域的值增加给定的数字。增加 key 指定的哈希集中指定字段的数值。如果 key 不存在，会创建一个新的哈希集并与 key 关联。如果字段不存在，则字段的值在该操作执行前被设置为 0。
+
+　　　　HINCRBYFLOAT key field increment ：将哈希集中指定域的值增加给定的浮点数。
